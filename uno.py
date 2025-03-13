@@ -1,5 +1,6 @@
 import random
 from enum import Enum
+import time
 
 class Color(Enum):
     RED = "Red"
@@ -169,6 +170,8 @@ def main(playerRandom, cheat, playerAmount, cardAmount, initialCard):
                     if is_valid_play(selected_card, discard_pile[-1], current_color):
                         player.remove_card(choice - 1)
                         discard_pile.append(selected_card)
+
+                        #wild for player
                         if selected_card.type in [Type.WILD, Type.WILD4]:
                             new_color_input = input("Choose a new color (Red, Green, Blue, Yellow): ").strip().upper()
                             if new_color_input in ["RED", "GREEN", "BLUE", "YELLOW"]:
@@ -177,6 +180,30 @@ def main(playerRandom, cheat, playerAmount, cardAmount, initialCard):
                                 print("Invalid color, system is randomizing one for you.")
                                 current_color = random.choice([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW])
                             print(f"You played {selected_card} and changed color to {current_color.value}.")
+                            print("得胜已是定局")
+                        
+                        #reverse for player
+                        elif selected_card.type == Type.REVERSE:
+                            current_color = selected_card.color
+                            direction=-direction
+                            print(f"You played {selected_card} and direction is reversed.")
+
+                        #draw2 for player
+                        elif selected_card.type == Type.DRAW2:
+                            current_color = selected_card.color
+                            next_player=(current_player_index + direction) % num_players
+                            drawn_card = deck.draw()
+                            players[next_player].add_card(drawn_card)
+                            drawn_card = deck.draw()
+                            players[next_player].add_card(drawn_card)
+                            print(f"You played {selected_card} and next player draws two cards.")
+                        
+                        #skip for player
+                        elif selected_card == Type.SKIP:
+                            current_color = selected_card.color
+                            print(f"You played {selected_card} and next player is skipped.")
+                            current_player_index = current_player_index + 1
+                        #normal cards
                         else:
                             current_color = selected_card.color
                             print(f"You played {selected_card}.")
@@ -191,14 +218,40 @@ def main(playerRandom, cheat, playerAmount, cardAmount, initialCard):
                 if is_valid_play(card, discard_pile[-1], current_color):
                     selected_card = player.hand.pop(i)
                     discard_pile.append(selected_card)
+                    #wild for ai
                     if selected_card.type in [Type.WILD, Type.WILD4]:
                         new_color = random.choice([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW])
                         current_color = new_color
                         print(f"{player.name} played {selected_card} and changed color to {new_color.value}.")
+
+                    #reverse for ai
+                    elif selected_card.type == Type.REVERSE:
+                        current_color = selected_card.color
+                        direction=-direction
+                        print(f"{player.name} played {selected_card} and and direction is reversed.")
+
+                    #draw2 for ai
+                    elif selected_card.type == Type.DRAW2:
+                        current_color = selected_card.color
+                        next_player=(current_player_index + direction) % num_players
+                        drawn_card = deck.draw()
+                        players[next_player].add_card(drawn_card)
+                        drawn_card = deck.draw()
+                        players[next_player].add_card(drawn_card)
+                        print(f"{player.name} played {selected_card} and next player draws two cards.")
+                    
+                    #skip for ai
+                    elif selected_card == Type.SKIP:
+                            current_color = selected_card.color
+                            print(f"{player.name} played {selected_card} and next player is skipped.")
+                            current_player_index = current_player_index + 1
+
+                    #noraml cards
                     else:
                         current_color = selected_card.color
                         print(f"{player.name} played {selected_card}.")
                     valid_card_found = True
+
                     break
             if not valid_card_found:
                 drawn_card = deck.draw()
@@ -213,11 +266,16 @@ def main(playerRandom, cheat, playerAmount, cardAmount, initialCard):
             break
 
         current_player_index = (current_player_index + direction) % num_players
+        for i in range (3):
+            time.sleep(0.5)
+            print("  @   ",end="")
+            time.sleep(0.5)
+        print("\n")
         
 if __name__ == "__main__":
     playerRandom= True #randomize position
     cheat = False #can see AI card
-    playerAmount = 0 #number of AI
+    playerAmount = 1 #number of AI
     cardAmount = 3 #number of card per color
-    initialCard = 10 #numner of initial card in hand
+    initialCard = 7 #numner of initial card in hand
     main(playerRandom, cheat, playerAmount, cardAmount, initialCard)
