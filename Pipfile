@@ -7,7 +7,7 @@ name = "pypi"
 pytest = "*"        
 build = "*"         
 terminalUno = {file = ".", editable = true}
-
+pytest-cov = "*"
 
 [dev-packages]
 black = "*"         
@@ -15,4 +15,3 @@ mypy = "*"
 
 [requires]
 python_version = "3"
-

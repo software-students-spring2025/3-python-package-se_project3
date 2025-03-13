@@ -30,7 +30,7 @@ pip3 install twine
 ```
 - Create a virtual environment and install dependencies
 ```bash
-pipenv install --dev
+pipenv install pytest-cov --dev
 ```
 - Activate the virtual environment
 ```bash
