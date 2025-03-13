@@ -21,7 +21,6 @@ jobs:
           pipenv install -e .
       - name: Test with pytest
         run: |
-          pipenv install pytest
+          pipenv install pytest-cov --dev
           pipenv --venv
           pipenv run python -m pytest
-          pytest --cov=terminalUno --cov-report=xml
