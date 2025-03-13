@@ -2,9 +2,12 @@
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+license-files = []
+
 [project]
 name = "terminalUno"
-description = ""
+description = "A python package"
 version = "0.0.0"
 authors = [
   { name="Jiaxi Zhang", email="jz5751@nyu.edu" },

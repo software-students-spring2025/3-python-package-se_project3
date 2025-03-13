@@ -13,26 +13,44 @@ An exercise to create a Python package, build it, test it, distribute it, and us
 ## Pypl Project Link
 
 ## Steps Needed to Contribute
--[x] Clone the repo
+- Clone the repo
 ```bash
 git clone https://github.com/software-students-spring2025/3-python-package-se_project3/blob/main/instructions.md
 cd 3-python-package-se_project3
 ```
--[x] Create a new branch
+- Create a new branch
 ```bash
 git checkout -b <branch-name>
 ```
--[x] Install pipenv, build, and twine if you don't have them
+- Install pipenv, build, and twine if you don't have them
 ```bash
 python3 -m pip install --user pipenv
 python3 -m pip install --upgrade build
 pip3 install twine
 ```
--[x] Create a virtual environment and install dependencies
+- Create a virtual environment and install dependencies
 ```bash
 pipenv install --dev
 ```
---[x] Activate the virtual environment
+- Activate the virtual environment
 ```bash
 pipenv shell
+```
+- Exit the virtual environment
+```bash
+exit
+```
+
+## Steps to Run the Tests
+- Activate the virtual environment
+```bash
+pipenv shell
+```
+- Run the tests without success output
+```bash
+pytest
+```
+- Run the tests with success output
+```bash
+pytest -s
 ```
