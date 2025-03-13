@@ -5,3 +5,4 @@ An exercise to create a Python package, build it, test it, distribute it, and us
 
 ## Team Members
 - **Haoxuan Lin(Steve)**: [Echoudexigaigu](https://github.com/Echoudexigaigu)
+- **Jiaxi Zhang**: [SuQichen777](https://github.com/SuQichen777)
