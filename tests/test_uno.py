@@ -1,5 +1,6 @@
 import pytest
 from terminalUno import Card, Color, Type, Deck, Player, is_valid_play
+# for now run "PYTHONPATH=src pytest tests/test_uno.py" to activate tests
 
 class TestUno:
 
