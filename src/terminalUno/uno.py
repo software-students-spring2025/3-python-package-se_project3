@@ -27,8 +27,8 @@ class Card:
         return f"{self.color.value} {self.type.value} {self.number if self.number is not None else ''}".strip()
 
 class Deck():
-    def __init__(self,cardAmount,initialCard):
-        self.cardAmount = cardAmount
+    def __init__(self, cardNumMax = 10, initialCard = 7):
+        self.cardNumMax = cardNumMax
         self.initialCard = initialCard
         self.cards = []
         self.initialize()
@@ -36,10 +36,11 @@ class Deck():
 
     def initialize(self):
         self.cards = []
+        self.discard_pile = []
         colors = [Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW]
         for color in colors:
             self.cards.append(Card(color, Type.NUMBER, 0))
-            for num in range(1, self.cardAmount):
+            for num in range(1, self.cardNumMax):
                 self.cards.append(Card(color, Type.NUMBER, num))
                 self.cards.append(Card(color, Type.NUMBER, num))
             self.cards.append(Card(color, Type.SKIP))
@@ -51,6 +52,7 @@ class Deck():
         for _ in range(4):
             self.cards.append(Card(Color.BLACK, Type.WILD))
             self.cards.append(Card(Color.BLACK, Type.WILD4))
+        print("Deck initialized.")
         self.shuffle()
 
     def shuffle(self):
@@ -58,6 +60,12 @@ class Deck():
 
     def draw(self):
         return self.cards.pop() if self.cards else None
+
+    def __len__(self):
+        return len(self.cards)
+    
+    def __contains__(self, card):
+        return card in self.cards
 
 class Player:
     def __init__(self, name, is_ai=False):
@@ -86,24 +94,24 @@ def is_valid_play(selected_card, top_card, current_color):
         return True
     return False
 
-
-def main(playerRandom, cheat, playerAmount, cardAmount, initialCard):
-    deck = Deck(cardAmount,initialCard)
+def initialize_players(otherPlayerAmount, playerRandom):
     players = []
-    for i in range (playerAmount):
+    for i in range (otherPlayerAmount):
         ai_player_name = "AI " + str(i+1)
         players.append(Player(ai_player_name, True))
 
     position = 0
     if playerRandom:
-        position = random.randint(0,playerAmount)
+        position = random.randint(0,otherPlayerAmount)
         players.insert(position, Player("You"))
     else:
         players.insert(0, Player("You"))
     print("You are at position", position+1)
-    
+    return players, position
 
-    num_players = len(players)
+def initialize_deck_and_discard_pile(cardNumMax, initialCard, players):
+    deck = Deck(cardNumMax,initialCard)
+    discard_pile = []
     for _ in range(initialCard):
         for player in players:
             card = deck.draw()
@@ -111,8 +119,7 @@ def main(playerRandom, cheat, playerAmount, cardAmount, initialCard):
                 player.add_card(card)
             else:
                 print("Deck is empty while dealing!")
-    
-    discard_pile = []
+                return
     initial_discard = deck.draw()
     while initial_discard is not None and initial_discard.type in [Type.WILD, Type.WILD4]:
         deck.cards.insert(0, initial_discard)
@@ -122,6 +129,15 @@ def main(playerRandom, cheat, playerAmount, cardAmount, initialCard):
         print("Deck ran out of cards to start the game!")
         return
     discard_pile.append(initial_discard)
+    return deck, discard_pile
+
+
+def main(playerRandom, cheat, otherPlayerAmount, cardNumMax = 10, initialCard = 7):
+    players, position = initialize_players(otherPlayerAmount, playerRandom)
+    num_players = len(players)
+    deck, discard_pile = initialize_deck_and_discard_pile(cardNumMax, initialCard, players)
+
+
     
     current_color = discard_pile[-1].color if discard_pile[-1].type != Type.WILD else random.choice([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW])
     
@@ -274,8 +290,9 @@ def main(playerRandom, cheat, playerAmount, cardAmount, initialCard):
         
 if __name__ == "__main__":
     playerRandom= True #randomize position
-    cheat = False #can see AI card
-    playerAmount = 1 #number of AI
-    cardAmount = 3 #number of card per color
-    initialCard = 7 #numner of initial card in hand
-    main(playerRandom, cheat, playerAmount, cardAmount, initialCard)
+    cheat = True #can see AI card
+    otherPlayerAmount = 1 #number of AI
+    # cardNumMax = 3 #number of card per color
+    # initialCard = 7 #numner of initial card in hand
+    # main(playerRandom, cheat, otherPlayerAmount, cardNumMax, initialCard)
+    main(playerRandom, cheat, otherPlayerAmount)
