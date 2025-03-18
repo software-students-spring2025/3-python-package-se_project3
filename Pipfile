@@ -8,6 +8,7 @@ pytest = "*"
 build = "*"         
 terminalUno = {file = ".", editable = true}
 pytest-cov = "*"
+twine = "*"
 
 [dev-packages]
 black = "*"         
