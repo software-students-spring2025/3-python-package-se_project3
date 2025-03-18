@@ -83,13 +83,17 @@ class Player:
         return f"{self.name}: {self.hand}"
 
 def is_valid_play(selected_card, top_card, current_color):
+    # Wild Cards
     if selected_card.type in [Type.WILD, Type.WILD4]:
         return True
+    # Same color
     if selected_card.color == current_color:
         return True
+    # Same type
     if selected_card.type == Type.NUMBER and top_card.type == Type.NUMBER:
         if selected_card.number == top_card.number:
             return True
+    # Same type for special cards
     if top_card.type != Type.NUMBER and selected_card.type == top_card.type:
         return True
     return False
@@ -112,6 +116,7 @@ def initialize_players(otherPlayerAmount, playerRandom):
 def initialize_deck_and_discard_pile(cardNumMax, initialCard, players):
     deck = Deck(cardNumMax,initialCard)
     discard_pile = []
+    # Draw initial cards
     for _ in range(initialCard):
         for player in players:
             card = deck.draw()
@@ -179,7 +184,7 @@ def main(playerRandom, cheat, otherPlayerAmount, cardNumMax = 10, initialCard = 
                         else:
                             print("Deck is empty.")
                         break
-                    if choice < 1 or choice > len(player.hand):
+                    elif choice < 1 or choice > len(player.hand):
                         print("Invalid selection. Choose a valid card number.")
                         continue
                     selected_card = player.hand[choice - 1]
@@ -189,14 +194,14 @@ def main(playerRandom, cheat, otherPlayerAmount, cardNumMax = 10, initialCard = 
 
                         #wild for player
                         if selected_card.type in [Type.WILD, Type.WILD4]:
-                            new_color_input = input("Choose a new color (Red, Green, Blue, Yellow): ").strip().upper()
+                            new_color_input = input("Choose a new color (RED, GREEN, BLUE, YELLOW): ").strip().upper()
                             if new_color_input in ["RED", "GREEN", "BLUE", "YELLOW"]:
                                 current_color = Color[new_color_input]
                             else:
                                 print("Invalid color, system is randomizing one for you.")
                                 current_color = random.choice([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW])
                             print(f"You played {selected_card} and changed color to {current_color.value}.")
-                            print("得胜已是定局")
+                            # print("得胜已是定局")
                         
                         #reverse for player
                         elif selected_card.type == Type.REVERSE:
