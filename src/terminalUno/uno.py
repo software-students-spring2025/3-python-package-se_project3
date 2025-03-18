@@ -111,11 +111,12 @@ def initialize_players(otherPlayerAmount, playerRandom):
     else:
         players.insert(0, Player("You"))
     print("You are at position", position+1)
-    return players, position
+    return players
 
 def initialize_deck_and_discard_pile(cardNumMax, initialCard, players):
     deck = Deck(cardNumMax,initialCard)
     discard_pile = []
+    first_colour=None
     # Draw initial cards
     for _ in range(initialCard):
         for player in players:
@@ -134,170 +135,177 @@ def initialize_deck_and_discard_pile(cardNumMax, initialCard, players):
         print("Deck ran out of cards to start the game!")
         return
     discard_pile.append(initial_discard)
-    return deck, discard_pile
+    first_colour=discard_pile[-1].color if discard_pile[-1].type != Type.WILD else random.choice([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW])
+    return deck, discard_pile, first_colour
 
 
-def main(playerRandom, cheat, otherPlayerAmount, cardNumMax = 10, initialCard = 7):
-    players, position = initialize_players(otherPlayerAmount, playerRandom)
-    num_players = len(players)
-    deck, discard_pile = initialize_deck_and_discard_pile(cardNumMax, initialCard, players)
+def display_game_state(player, players, discard_pile, current_color, cheat):
+    print(f"\n*** {player.name}'s Turn ***")
+    print(f"Current Card: {discard_pile[-1]}")
+    if discard_pile[-1].type in [Type.WILD, Type.WILD4]:
+        print(f"Current color: {current_color.value}")
+    print("Other Players' Hands:", end=" ")
+    for p in players:
+        if p != player:
+            if cheat and p.is_ai:
+                print(f"{p.name}: {p.hand}", end="  ")
+            else:
+                print(f"{p.name}: {len(p.hand)} cards", end="  ")
+    print("\n")
 
+def display_player_hand(player):
+    print("Your Hand:")
+    for i, card in enumerate(player.hand):
+        print(f"{i+1}: {card}")
+    print("0: Draw a Card")
 
-    
-    current_color = discard_pile[-1].color if discard_pile[-1].type != Type.WILD else random.choice([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW])
-    
-    current_player_index = 0
-    direction = 1
-
+def get_player_card_choice(player, deck, discard_pile, current_color):
     while True:
-        player = players[current_player_index]
-        print(f"\n*** {player.name}'s Turn ***")
-        print(f"Current Card: {discard_pile[-1]}")
-        if discard_pile[-1].type in [Type.WILD, Type.WILD4]:
-            print(f"Current color: {current_color.value}")
-        print("Other Players' Hands:", end=" ")
-        for p in players:
-            if p != player:
-                if cheat and p.is_ai:
-                    print(f"{p.name}: {p.hand}", end="  ")
+        try:
+            choice = input("Choose a card to play (Enter number): ")
+            if not choice.isdigit():
+                print("Invalid input. Please enter a number.")
+                continue
+            
+            choice = int(choice)
+            
+            # Handle special choice
+            if choice == 0:
+                drawn_card = deck.draw()
+                if drawn_card is not None:
+                    player.add_card(drawn_card)
+                    print("You drew a card.")
                 else:
-                    print(f"{p.name}: {len(p.hand)} cards", end="  ")
-        print("\n")
+                    print("Deck is empty.")
+                return None, choice
+            elif choice < 1 or choice > len(player.hand):
+                print("Invalid selection. Choose a valid card number.")
+                continue
+                
+            selected_card = player.hand[choice - 1]
+            
+            if is_valid_play(selected_card, discard_pile[-1], current_color):
+                return selected_card, choice - 1
+            else:
+                print("Invalid card selection. Choose a valid card.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
 
-        if not player.is_ai:
-            print("Your Hand:")
-            for i, card in enumerate(player.hand):
-                print(f"{i+1}: {card}")
-            print("0: Draw a Card")
-            while True:
-                try:
-                    choice = input("Choose a card to play (Enter number): ")
-                    if not choice.isdigit():
-                        print("Invalid input. Please enter a number.")
-                        continue
-                    choice = int(choice)
-                    if choice == 0:
-                        drawn_card = deck.draw()
-                        if drawn_card is not None:
-                            player.add_card(drawn_card)
-                            print("You drew a card.")
-                        else:
-                            print("Deck is empty.")
-                        break
-                    elif choice < 1 or choice > len(player.hand):
-                        print("Invalid selection. Choose a valid card number.")
-                        continue
-                    selected_card = player.hand[choice - 1]
-                    if is_valid_play(selected_card, discard_pile[-1], current_color):
-                        player.remove_card(choice - 1)
-                        discard_pile.append(selected_card)
-
-                        #wild for player
-                        if selected_card.type in [Type.WILD, Type.WILD4]:
-                            new_color_input = input("Choose a new color (RED, GREEN, BLUE, YELLOW): ").strip().upper()
-                            if new_color_input in ["RED", "GREEN", "BLUE", "YELLOW"]:
-                                current_color = Color[new_color_input]
-                            else:
-                                print("Invalid color, system is randomizing one for you.")
-                                current_color = random.choice([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW])
-                            print(f"You played {selected_card} and changed color to {current_color.value}.")
-                            # print("得胜已是定局")
-                        
-                        #reverse for player
-                        elif selected_card.type == Type.REVERSE:
-                            current_color = selected_card.color
-                            direction=-direction
-                            print(f"You played {selected_card} and direction is reversed.")
-
-                        #draw2 for player
-                        elif selected_card.type == Type.DRAW2:
-                            current_color = selected_card.color
-                            next_player=(current_player_index + direction) % num_players
-                            drawn_card = deck.draw()
-                            players[next_player].add_card(drawn_card)
-                            drawn_card = deck.draw()
-                            players[next_player].add_card(drawn_card)
-                            print(f"You played {selected_card} and next player draws two cards.")
-                        
-                        #skip for player
-                        elif selected_card == Type.SKIP:
-                            current_color = selected_card.color
-                            print(f"You played {selected_card} and next player is skipped.")
-                            current_player_index = current_player_index + 1
-                        #normal cards
-                        else:
-                            current_color = selected_card.color
-                            print(f"You played {selected_card}.")
-                        break
-                    else:
-                        print("Invalid card selection. Choose a valid card.")
-                except ValueError:
-                    print("Invalid input. Please enter a number.")
+def apply_card_effect(selected_card, player, players, current_player_index, direction, current_color, deck, is_ai=False):
+    num_players = len(players)
+    skip_flag= False
+    
+    # Handle Wild cards
+    if selected_card.type in [Type.WILD, Type.WILD4]:
+        # For player
+        if not is_ai:
+            new_color_input = input("Choose a new color (Red, Green, Blue or Yellow): ").strip().upper()
+            if new_color_input in ["RED", "GREEN", "BLUE", "YELLOW"]:
+                current_color = Color[new_color_input]
+            else:
+                print("Invalid color, system is randomizing one for you.")
+                current_color = random.choice([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW])
+            print(f"{player.name} played {selected_card} and changed color to {current_color.value}.")
+        # For AI
         else:
-            valid_card_found = False
-            for i, card in enumerate(player.hand):
-                if is_valid_play(card, discard_pile[-1], current_color):
-                    selected_card = player.hand.pop(i)
-                    discard_pile.append(selected_card)
-                    #wild for ai
-                    if selected_card.type in [Type.WILD, Type.WILD4]:
-                        new_color = random.choice([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW])
-                        current_color = new_color
-                        print(f"{player.name} played {selected_card} and changed color to {new_color.value}.")
+            new_color = random.choice([Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW])
+            current_color = new_color
+            print(f"{player.name} played {selected_card} and changed color to {new_color.value}.")
+    
+    # Handle Reverse cards
+    elif selected_card.type == Type.REVERSE:
+        current_color = selected_card.color
+        direction = -direction
+        print(f"{player.name} played {selected_card} and direction is reversed.")
 
-                    #reverse for ai
-                    elif selected_card.type == Type.REVERSE:
-                        current_color = selected_card.color
-                        direction=-direction
-                        print(f"{player.name} played {selected_card} and and direction is reversed.")
+    # Handle Draw2 cards
+    elif selected_card.type == Type.DRAW2:
+        current_color = selected_card.color
+        next_player = (current_player_index + direction) % num_players
+        for _ in range(2):
+            drawn_card = deck.draw()
+            if drawn_card:
+                players[next_player].add_card(drawn_card)
+        print(f"{player.name} played {selected_card} and next player draws two cards.")
+    
+    # Handle Skip cards
+    elif selected_card.type == Type.SKIP:
+        current_color = selected_card.color
+        print(f"{player.name} played {selected_card} and next player is skipped.")
+        skip_flag= True
+    
+    # Handle normal cards
+    else:
+        current_color = selected_card.color
+        print(f"{player.name} played {selected_card}.")
+    
+    return current_color, direction, skip_flag
 
-                    #draw2 for ai
-                    elif selected_card.type == Type.DRAW2:
-                        current_color = selected_card.color
-                        next_player=(current_player_index + direction) % num_players
-                        drawn_card = deck.draw()
-                        players[next_player].add_card(drawn_card)
-                        drawn_card = deck.draw()
-                        players[next_player].add_card(drawn_card)
-                        print(f"{player.name} played {selected_card} and next player draws two cards.")
-                    
-                    #skip for ai
-                    elif selected_card == Type.SKIP:
-                            current_color = selected_card.color
-                            print(f"{player.name} played {selected_card} and next player is skipped.")
-                            current_player_index = current_player_index + 1
+# Reshuffle if deck is empty
+def check_and_refresh_deck(deck, discard_pile):
+    if not deck.cards and len(discard_pile) > 1:
+        print("Reshuffling the discard pile into the deck...")
+        # Keep the top card of the discard pile
+        top_card = discard_pile.pop()
+        deck.cards = discard_pile.copy()
+        discard_pile.clear()
+        discard_pile.append(top_card)
+        deck.shuffle()
+        return True
+    return False
 
-                    #noraml cards
-                    else:
-                        current_color = selected_card.color
-                        print(f"{player.name} played {selected_card}.")
-                    valid_card_found = True
-
-                    break
-            if not valid_card_found:
+def handle_player_turn(player, players, deck, discard_pile, current_color, current_player_index, direction, cheat):
+    game_over = False
+    skip_flag = False
+    
+    # player's turn
+    if not player.is_ai:
+        display_game_state(player, players, discard_pile, current_color, cheat)
+        display_player_hand(player)
+        selected_card, choice_index = get_player_card_choice(player, deck, discard_pile, current_color)
+        
+        if selected_card: # If a valid selected card
+            player.remove_card(choice_index)
+            discard_pile.append(selected_card)
+            current_color, direction, skip_flag = apply_card_effect(
+                selected_card, player, players, 
+                current_player_index, direction, current_color, deck
+            )
+    
+    # AI's turn
+    else:
+        valid_card_found = False
+        for i, card in enumerate(player.hand):
+            if is_valid_play(card, discard_pile[-1], current_color):
+                selected_card = player.hand.pop(i)
+                discard_pile.append(selected_card)
+                current_color, direction, skip_flag = apply_card_effect(
+                    selected_card, player, players, 
+                    current_player_index, direction, current_color, deck, is_ai=True
+                )
+                valid_card_found = True
+                break
+                
+        if not valid_card_found:
+            drawn_card = deck.draw()
+            if drawn_card:
+                player.add_card(drawn_card)
+                print(f"{player.name} drew a card.")
+            else:
+                check_and_refresh_deck(deck, discard_pile)
                 drawn_card = deck.draw()
                 if drawn_card:
                     player.add_card(drawn_card)
-                    print(f"{player.name} drew a card.")
+                    print(f"{player.name} drew a card after reshuffling.")
                 else:
-                    print("Deck is empty.")
-        
-        if not player.hand:
-            print(f"{player.name} wins!")
-            break
+                    print("There's just no card left!")
+    
+    # Check for winner
+    if not player.hand:
+        print(f"{player.name} wins!")
+        game_over = True
+    
+    return current_color, direction, skip_flag, game_over
 
-        current_player_index = (current_player_index + direction) % num_players
-        for i in range (3):
-            time.sleep(0.5)
-            print("  @   ",end="")
-            time.sleep(0.5)
-        print("\n")
-        
-if __name__ == "__main__":
-    playerRandom= True #randomize position
-    cheat = True #can see AI card
-    otherPlayerAmount = 1 #number of AI
-    # cardNumMax = 3 #number of card per color
-    # initialCard = 7 #numner of initial card in hand
-    # main(playerRandom, cheat, otherPlayerAmount, cardNumMax, initialCard)
-    main(playerRandom, cheat, otherPlayerAmount)
+
+
