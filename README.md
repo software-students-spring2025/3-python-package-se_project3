@@ -1,4 +1,4 @@
-![Python build & test](https://github.com/nyu-software-engineering/python-package-example/blob/main/.github/workflows/build.yaml/badge.svg)
+![Python build & test](https://github.com/nyu-software-engineering/3-python-package-se_project3/blob/main/.github/workflows/build.yaml/badge.svg)
 # Python Package Exercise
 
 An exercise to create a Python package, build it, test it, distribute it, and use it. See [instructions](./instructions.md) for details.
