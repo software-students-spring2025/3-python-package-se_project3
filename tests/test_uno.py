@@ -38,13 +38,13 @@ class TestUno:
             card = deck.draw()
 
     def test_initialize_players(self):
-         players = uno.initialize_players(2, True)[0]
+         players = uno.initialize_players(2, True)
          assert len(players) == 3, f"the number of players when 2 AI players are initialized should be 3, not {len(players)}"
          print("Initialize players test passed")
 
     def test_initialize_deck(self):
-         players = uno.initialize_players(2, True)[0]
-         deck, discard_pile = uno.initialize_deck_and_discard_pile(cardNumMax = 10, initialCard = 7, players = players)
+         players = uno.initialize_players(2, True)
+         deck, discard_pile, first_colour = uno.initialize_deck_and_discard_pile(cardNumMax = 10, initialCard = 7, players = players)
          right_length = 108 - 21 - 1
          assert len(deck) == right_length, f"the number of cards in the deck after initial draw should be 86, not {len(deck)}"
          print("Initialize deck test passed")
