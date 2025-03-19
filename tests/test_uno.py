@@ -1,5 +1,6 @@
 import pytest
 from terminalUno import Card, Color, Type, Deck, Player, is_valid_play, uno
+from unittest.mock import patch
 # for now run "PYTHONPATH=src pytest tests/test_uno.py" to activate tests
 
 class TestUno:
@@ -57,26 +58,30 @@ class TestUno:
         top_card = Card(Color.RED, Type.NUMBER, 5)
         selected_card = Card(Color.RED, Type.SKIP)
         assert is_valid_play(selected_card, top_card, Color.RED) is True, f"Same Color Test failed"
+        print("Same Color Test passed")
 
     def test_valid_play_same_number(self):
         top_card = Card(Color.GREEN, Type.NUMBER, 3)
         selected_card = Card(Color.RED, Type.NUMBER, 3)
         assert is_valid_play(selected_card, top_card, Color.RED) is True, f"Same Number Test failed"
+        print("Same Number Test passed")
 
     def test_valid_play_wild_card(self):
         top_card = Card(Color.BLUE, Type.NUMBER, 7)
         selected_card = Card(Color.BLACK, Type.WILD)
         assert is_valid_play(selected_card, top_card, Color.BLUE) is True, f"Wild Card Test failed"
+        print("Wild Card Test passed")
 
     def test_invalid_play(self):
         top_card = Card(Color.YELLOW, Type.NUMBER, 8)
         selected_card = Card(Color.BLUE, Type.NUMBER, 2)
         assert is_valid_play(selected_card, top_card, Color.YELLOW) is False, f"Invalid Play Test failed"
+        print("Invalid Play Test passed")
 
     def test_skip_card(self):
         # Setup a game scenario with 3 players
         players = [Player("Player1"), Player("Player2"), Player("Player3")]
-        deck = Deck(3, 7)  # Smaller deck for testing
+        deck = Deck(10,7)  # Smaller deck for testing
         # Initial state
         current_player_index = 0
         direction = 1
@@ -95,3 +100,89 @@ class TestUno:
 
         print("Skip card functionality test passed")
 
+
+    #divide into 4 situtation, honest and dishonest play, challenge or not
+    def test_wild4_honest_no_challenge(self):
+        # Player 1 plays Wild4 honestly (no matching color). Player 2 does not challenge.
+        players = [Player("Player1"), Player("Player2")]
+        deck = Deck(10,7)
+        current_color = Color.RED
+        direction = 1
+        current_player_index = 0
+        wild4_card = Card(Color.BLACK, Type.WILD4)
+        players[0].hand = [Card(Color.BLUE, Type.NUMBER, 3), wild4_card]
+        players[1].hand = [Card(Color.YELLOW, Type.NUMBER, 6), Card(Color.GREEN, Type.NUMBER, 2)]
+
+        with patch('builtins.input', return_value='no'):
+            current_color, direction, skip_next = uno.apply_card_effect(
+                wild4_card, players[0], players, current_player_index, direction, current_color, deck
+            )
+        
+        assert len(players[1].hand) == 6, "Next player should have drawn 4 cards"
+        assert skip_next is True, "Next player should be skipped"
+        print("Wild4 honest play, no challenge test passed")
+    
+    def test_wild4_honest_challenge(self):
+        #Player 1 plays Wild4 honestly (no matching color). Player 2 challenges and fails.
+        players = [Player("Player1"), Player("Player2")]
+        deck = Deck(10,7)
+        current_color = Color.RED
+        direction = 1
+        current_player_index = 0
+
+        wild4_card = Card(Color.BLACK, Type.WILD4)
+        players[0].hand = [Card(Color.BLUE, Type.NUMBER, 3), wild4_card]
+        players[1].hand = [Card(Color.YELLOW, Type.NUMBER, 6), Card(Color.GREEN, Type.NUMBER, 2)]
+
+        with patch('builtins.input', return_value='yes'):
+            current_color, direction, skip_next = uno.apply_card_effect(
+                wild4_card, players[0], players, current_player_index, direction, current_color, deck
+            )
+        
+        assert len(players[1].hand) == 8, "Next player should have drawn 6 cards (challenge failed)"
+        assert skip_next is True, "Next player should be skipped"
+        print("Wild4 honest play, challenge failed test passed")
+    
+    def test_wild4_dishonest_no_challenge(self):
+        #Player 1 plays Wild4 dishonestly (has matching color). Player 2 does not challenge.
+        players = [Player("Player1"), Player("Player2")]
+        deck = Deck(10,7)
+        current_color = Color.RED
+        direction = 1
+        current_player_index = 0
+
+        wild4_card = Card(Color.BLACK, Type.WILD4)
+        legal_card = Card(Color.RED, Type.NUMBER, 5)
+        players[0].hand = [legal_card, wild4_card]
+        players[1].hand = [Card(Color.YELLOW, Type.NUMBER, 6), Card(Color.GREEN, Type.NUMBER, 2)]
+
+        with patch('builtins.input', return_value='no'):
+            current_color, direction, skip_next = uno.apply_card_effect(
+                wild4_card, players[0], players, current_player_index, direction, current_color, deck
+            )
+        
+        assert len(players[1].hand) == 6, "Next player should have drawn 4 cards"
+        assert skip_next is True, "Next player should be skipped"
+        print("Wild4 dishonest play, no challenge test passed")
+    
+    def test_wild4_dishonest_challenge(self):
+        #Player 1 plays Wild4 dishonestly (has matching color). Player 2 challenges and succeeds.
+        players = [Player("Player1"), Player("Player2")]
+        deck = Deck(10,7)
+        current_color = Color.RED
+        direction = 1
+        current_player_index = 0
+
+        wild4_card = Card(Color.BLACK, Type.WILD4)
+        legal_card = Card(Color.RED, Type.NUMBER, 5)
+        players[0].hand = [legal_card, wild4_card]
+        players[1].hand = [Card(Color.YELLOW, Type.NUMBER, 6), Card(Color.GREEN, Type.NUMBER, 2)]
+
+        with patch('builtins.input', return_value='yes'):
+            current_color, direction, skip_next = uno.apply_card_effect(
+                wild4_card, players[0], players, current_player_index, direction, current_color, deck
+            )
+        
+        assert len(players[0].hand) == 6, "Challenged player should draw 4 cards"
+        assert skip_next is False, "Next player should not be skipped"
+        print("Wild4 dishonest play, challenge success test passed")

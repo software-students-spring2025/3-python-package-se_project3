@@ -212,6 +212,46 @@ def apply_card_effect(selected_card, player, players, current_player_index, dire
             current_color = new_color
             print(f"{player.name} played {selected_card} and changed color to {new_color.value}.")
     
+    if selected_card.type == Type.WILD4:
+        print("Next player can challenge!")
+
+        # challenge wild4
+        next_player = (current_player_index + direction) % num_players
+        # For player
+        if not is_ai:
+            challenge = input(f"{players[next_player].name}, do you want to challenge? (yes/no): ").strip().lower()
+        else:
+            print(f"{players[next_player].name}, do you want to challenge? (yes/no): ", end = "")
+            choice = random.random()
+            if choice <= 0.3:
+                challenge = "yes"
+            else:
+                challenge = "no"
+            time.sleep(0.5)
+            print(f"{challenge}")
+
+        if challenge == "yes":
+            # check if possible
+            valid_play_exists = any(
+                is_valid_play(card, selected_card, current_color) and card.type != Type.WILD4
+                for card in player.hand
+            )
+            if valid_play_exists:
+                print(f"Challenge successful! {player.name} has other playable cards. {player.name} draws 4 cards instead.")
+                for _ in range(4):
+                    player.add_card(deck.draw())
+            else:
+                print(f"Challenge failed! {players[next_player].name} must draw 2 extra cards (total 6).")
+                for _ in range(6):
+                    players[next_player].add_card(deck.draw())
+                skip_flag = True
+        else:
+            print(f"{players[next_player].name} chose not to challenge. They draw 4 cards and are skipped.")
+            for _ in range(4):
+                players[next_player].add_card(deck.draw())
+            skip_flag = True
+
+
     # Handle Reverse cards
     elif selected_card.type == Type.REVERSE:
         current_color = selected_card.color
