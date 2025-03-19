@@ -227,6 +227,7 @@ def apply_card_effect(selected_card, player, players, current_player_index, dire
                 challenge = "yes"
             else:
                 challenge = "no"
+            time.sleep(0.5)
             print(f"{challenge}")
 
         if challenge == "yes":
