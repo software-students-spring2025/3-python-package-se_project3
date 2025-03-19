@@ -81,7 +81,7 @@ class TestUno:
     def test_skip_card(self):
         # Setup a game scenario with 3 players
         players = [Player("Player1"), Player("Player2"), Player("Player3")]
-        deck = Deck(3, 7)  # Smaller deck for testing
+        deck = Deck(10,7)  # Smaller deck for testing
         # Initial state
         current_player_index = 0
         direction = 1
@@ -105,7 +105,7 @@ class TestUno:
     def test_wild4_honest_no_challenge(self):
         # Player 1 plays Wild4 honestly (no matching color). Player 2 does not challenge.
         players = [Player("Player1"), Player("Player2")]
-        deck = Deck(3, 7)
+        deck = Deck(10,7)
         current_color = Color.RED
         direction = 1
         current_player_index = 0
@@ -125,7 +125,7 @@ class TestUno:
     def test_wild4_honest_challenge(self):
         #Player 1 plays Wild4 honestly (no matching color). Player 2 challenges and fails.
         players = [Player("Player1"), Player("Player2")]
-        deck = Deck(3, 7)
+        deck = Deck(10,7)
         current_color = Color.RED
         direction = 1
         current_player_index = 0
@@ -146,7 +146,7 @@ class TestUno:
     def test_wild4_dishonest_no_challenge(self):
         #Player 1 plays Wild4 dishonestly (has matching color). Player 2 does not challenge.
         players = [Player("Player1"), Player("Player2")]
-        deck = Deck(3, 7)
+        deck = Deck(10,7)
         current_color = Color.RED
         direction = 1
         current_player_index = 0
@@ -168,7 +168,7 @@ class TestUno:
     def test_wild4_dishonest_challenge(self):
         #Player 1 plays Wild4 dishonestly (has matching color). Player 2 challenges and succeeds.
         players = [Player("Player1"), Player("Player2")]
-        deck = Deck(3, 7)
+        deck = Deck(10,7)
         current_color = Color.RED
         direction = 1
         current_player_index = 0
