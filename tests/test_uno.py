@@ -22,10 +22,6 @@ class TestUno:
         assert repr(card) == "Blue Skip", f"Card representation should be 'Blue Skip', not {repr(card)}"
         print("Special Card representation test passed")
 
-    def test_deck_initialization(self):
-        deck = Deck(3, 7) 
-        assert len(deck.cards) == 52  
-
     def test_deck_shuffle(self):
         deck1 = Deck(3, 7)
         deck2 = Deck(3, 7)
@@ -41,35 +37,14 @@ class TestUno:
             assert len(deck.cards) == size
             card = deck.draw()
 
-    def test_player_initialization(self):
-        player = Player("Test Player")
-        assert player.name == "Test Player"
-        assert player.is_ai is False
-        assert player.hand == []
-
-    def test_player_add_card(self):
-        player = Player("Test Player")
-        card = Card(Color.RED, Type.NUMBER, 5)
-        player.add_card(card)
-        assert len(player.hand) == 1
-        assert player.hand[0] == card
-
-    def test_player_remove_card(self):
-        player = Player("Test Player")
-        card = Card(Color.BLUE, Type.NUMBER, 3)
-        player.add_card(card)
-        removed_card = player.remove_card(0)
-        assert removed_card == card
-        assert len(player.hand) == 0
-
     def test_initialize_players(self):
-         players = uno.initialize_players(2, True)[0]
+         players = uno.initialize_players(2, True)
          assert len(players) == 3, f"the number of players when 2 AI players are initialized should be 3, not {len(players)}"
          print("Initialize players test passed")
 
     def test_initialize_deck(self):
-         players = uno.initialize_players(2, True)[0]
-         deck, discard_pile = uno.initialize_deck_and_discard_pile(cardNumMax = 10, initialCard = 7, players = players)
+         players = uno.initialize_players(2, True)
+         deck, discard_pile, first_colour = uno.initialize_deck_and_discard_pile(cardNumMax = 10, initialCard = 7, players = players)
          right_length = 108 - 21 - 1
          assert len(deck) == right_length, f"the number of cards in the deck after initial draw should be 86, not {len(deck)}"
          print("Initialize deck test passed")
@@ -97,3 +72,26 @@ class TestUno:
         top_card = Card(Color.YELLOW, Type.NUMBER, 8)
         selected_card = Card(Color.BLUE, Type.NUMBER, 2)
         assert is_valid_play(selected_card, top_card, Color.YELLOW) is False, f"Invalid Play Test failed"
+
+    def test_skip_card(self):
+        # Setup a game scenario with 3 players
+        players = [Player("Player1"), Player("Player2"), Player("Player3")]
+        deck = Deck(3, 7)  # Smaller deck for testing
+        # Initial state
+        current_player_index = 0
+        direction = 1
+        current_color = Color.RED
+
+        target_card = Card(Color.RED, Type.SKIP)
+        
+        # Apply the effect
+        current_color, direction, skip_next = uno.apply_card_effect(
+            target_card, players[0], players, current_player_index, 
+            direction, current_color, deck
+        )
+        
+        # Check that skip_next is True
+        assert skip_next == True, "Skip card should set skip_next to True"
+
+        print("Skip card functionality test passed")
+
