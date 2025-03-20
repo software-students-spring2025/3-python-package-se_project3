@@ -12,8 +12,42 @@ An exercise to create a Python package, build it, test it, distribute it, and us
 
  
  ## Project Overview
+
+ TerminalUNO is a command-line implementation of the classic UNO card game, designed to be played against AI opponents. It provides an interactive, text-based experience, simulating the rules and mechanics of UNO, including draw cards (+2, +4), skips, reverses, wild cards, and stacking rules.
+
+ The game is developed in Python and runs entirely in the terminal, featuring turn-based gameplay, AI-controlled opponents, and special card effects.
  
  ## Pypl Project Link
+
+ [terminalUno 0.0.0](https://test.pypi.org/project/terminalUno/0.0.0/)
+ <!-- Renew after published -->
+
+ ## Installation & Usage
+ - Installation
+ ```bash
+ pip install -i https://test.pypi.org/simple/ terminalUno==0.0.4
+ ```
+ - Usage
+ ```bash
+ terminalUno
+ ```
+ 
+
+ ## Code examples
+
+ | **Function** | **Description** | **Example Usage** |
+ |-------------|---------------|------------------|
+ | `initialize_players(otherPlayerAmount, playerRandom)` | Initializes players. | `players = uno.initialize_players(3, True)` |
+ | `initialize_deck_and_discard_pile(cardNumMax, initialCard, players)` | Intializes UNO deck. | `deck, discard_pile, current_color = uno.initialize_deck_and_discard_pile(10, 7, players)` |
+ | `display_game_state(player, players, discard_pile, current_color, cheat)` | Prints game state. | `uno.display_game_state(player, players, discard_pile, current_color, False)` |
+ | `handle_player_turn(...)` | Processes a player’s turn. | `current_color, direction, skip_flag, game_over = uno.handle_player_turn(...)` |
+ | `is_valid_play(selected_card, top_card, current_color)` | Checks if a selected card is playable. | `valid = uno.is_valid_play(card, discard_pile[-1], current_color)` |
+ | `apply_card_effect(...)` | Applies special card effects (Skip, Reverse, Draw2, Wild). | `current_color, direction, skip_flag = uno.apply_card_effect(...)` |
+ | `check_and_refresh_deck(deck, discard_pile)` | Reshuffles discard pile. | `reshuffled = uno.check_and_refresh_deck(deck, discard_pile)` |
+
+ Fully working example:[example_terminaluno.py](examples/example_terminaluno.py) 
+
+
  
  ## Steps Needed to Contribute
  - Clone the repo
