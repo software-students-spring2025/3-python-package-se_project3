@@ -41,6 +41,10 @@ class TestUno:
     def test_initialize_players(self):
          players = uno.initialize_players(2, True)
          assert len(players) == 3, f"the number of players when 2 AI players are initialized should be 3, not {len(players)}"
+         players2 = uno.initialize_players(3, False)
+         assert len(players2) == 4, f"the number of players when 3 AI players are initialized should be 4, not {len(players2)}"
+         players4 = uno.initialize_players(4, False)
+         assert players4[0].name == "You", f"the first player should be named 'You', not {players4[0].name}"
          print("Initialize players test passed")
 
     def test_initialize_deck(self):
@@ -92,7 +96,7 @@ class TestUno:
         # Apply the effect
         current_color, direction, skip_next = uno.apply_card_effect(
             target_card, players[0], players, current_player_index, 
-            direction, current_color, deck
+            direction, current_color, deck, discard_pile=[]
         )
         
         # Check that skip_next is True
@@ -106,6 +110,8 @@ class TestUno:
         # Player 1 plays Wild4 honestly (no matching color). Player 2 does not challenge.
         players = [Player("Player1"), Player("Player2")]
         deck = Deck(10,7)
+        test_red_card = Card(Color.RED, Type.NUMBER, 5)
+        discard_pile = [test_red_card]
         current_color = Color.RED
         direction = 1
         current_player_index = 0
@@ -114,8 +120,10 @@ class TestUno:
         players[1].hand = [Card(Color.YELLOW, Type.NUMBER, 6), Card(Color.GREEN, Type.NUMBER, 2)]
 
         with patch('builtins.input', return_value='no'):
+            players[0].remove_card(1)
+            discard_pile.append(wild4_card)
             current_color, direction, skip_next = uno.apply_card_effect(
-                wild4_card, players[0], players, current_player_index, direction, current_color, deck
+                wild4_card, players[0], players, current_player_index, direction, current_color, deck, discard_pile
             )
         
         assert len(players[1].hand) == 6, "Next player should have drawn 4 cards"
@@ -126,6 +134,8 @@ class TestUno:
         #Player 1 plays Wild4 honestly (no matching color). Player 2 challenges and fails.
         players = [Player("Player1"), Player("Player2")]
         deck = Deck(10,7)
+        test_red_card = Card(Color.RED, Type.NUMBER, 5)
+        discard_pile = [test_red_card]
         current_color = Color.RED
         direction = 1
         current_player_index = 0
@@ -135,8 +145,10 @@ class TestUno:
         players[1].hand = [Card(Color.YELLOW, Type.NUMBER, 6), Card(Color.GREEN, Type.NUMBER, 2)]
 
         with patch('builtins.input', return_value='yes'):
+            players[0].remove_card(1)
+            discard_pile.append(wild4_card)
             current_color, direction, skip_next = uno.apply_card_effect(
-                wild4_card, players[0], players, current_player_index, direction, current_color, deck
+                wild4_card, players[0], players, current_player_index, direction, current_color, deck, discard_pile
             )
         
         assert len(players[1].hand) == 8, "Next player should have drawn 6 cards (challenge failed)"
@@ -147,6 +159,8 @@ class TestUno:
         #Player 1 plays Wild4 dishonestly (has matching color). Player 2 does not challenge.
         players = [Player("Player1"), Player("Player2")]
         deck = Deck(10,7)
+        test_red_card = Card(Color.RED, Type.NUMBER, 5)
+        discard_pile = [test_red_card]
         current_color = Color.RED
         direction = 1
         current_player_index = 0
@@ -157,8 +171,10 @@ class TestUno:
         players[1].hand = [Card(Color.YELLOW, Type.NUMBER, 6), Card(Color.GREEN, Type.NUMBER, 2)]
 
         with patch('builtins.input', return_value='no'):
+            players[0].remove_card(1)
+            discard_pile.append(wild4_card)
             current_color, direction, skip_next = uno.apply_card_effect(
-                wild4_card, players[0], players, current_player_index, direction, current_color, deck
+                wild4_card, players[0], players, current_player_index, direction, current_color, deck, discard_pile
             )
         
         assert len(players[1].hand) == 6, "Next player should have drawn 4 cards"
@@ -169,6 +185,8 @@ class TestUno:
         #Player 1 plays Wild4 dishonestly (has matching color). Player 2 challenges and succeeds.
         players = [Player("Player1"), Player("Player2")]
         deck = Deck(10,7)
+        test_red_card = Card(Color.RED, Type.NUMBER, 5)
+        discard_pile = [test_red_card]
         current_color = Color.RED
         direction = 1
         current_player_index = 0
@@ -179,10 +197,13 @@ class TestUno:
         players[1].hand = [Card(Color.YELLOW, Type.NUMBER, 6), Card(Color.GREEN, Type.NUMBER, 2)]
 
         with patch('builtins.input', return_value='yes'):
+            players[0].remove_card(1) # Remove wild4 card, so now hand only has legal card
+            discard_pile.append(wild4_card)
             current_color, direction, skip_next = uno.apply_card_effect(
-                wild4_card, players[0], players, current_player_index, direction, current_color, deck
+                wild4_card, players[0], players, current_player_index, direction, current_color, deck, discard_pile
             )
         
-        assert len(players[0].hand) == 6, "Challenged player should draw 4 cards"
+        assert len(players[0].hand) == 5, "Challenged player should draw 4 cards, now has 5 cards"
         assert skip_next is False, "Next player should not be skipped"
         print("Wild4 dishonest play, challenge success test passed")
+        
