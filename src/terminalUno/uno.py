@@ -343,7 +343,7 @@ def handle_player_turn(player, players, deck, discard_pile, current_color, curre
     # Check for winner
     if not player.hand:
         print(f"{player.name} wins!")
-        game_over = True
+        game_over = True if not player.is_ai else False
     
     return current_color, direction, skip_flag, game_over
 
