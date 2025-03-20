@@ -41,6 +41,10 @@ class TestUno:
     def test_initialize_players(self):
          players = uno.initialize_players(2, True)
          assert len(players) == 3, f"the number of players when 2 AI players are initialized should be 3, not {len(players)}"
+         players2 = uno.initialize_players(3, False)
+         assert len(players2) == 4, f"the number of players when 3 AI players are initialized should be 4, not {len(players2)}"
+         players4 = uno.initialize_players(4, False)
+         assert players4[0].name == "You", f"the first player should be named 'You', not {players4[0].name}"
          print("Initialize players test passed")
 
     def test_initialize_deck(self):
@@ -202,3 +206,4 @@ class TestUno:
         assert len(players[0].hand) == 5, "Challenged player should draw 4 cards, now has 5 cards"
         assert skip_next is False, "Next player should not be skipped"
         print("Wild4 dishonest play, challenge success test passed")
+        

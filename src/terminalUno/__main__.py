@@ -6,46 +6,21 @@ directly from command line, as opposed to importing it into another program.
 import terminalUno.uno as uno
 import time
 
-
-def main(playerRandom = True, cheat = False, otherPlayerAmount = 3, cardNumMax = 10, initialCard = 7):
-    players = uno.initialize_players(otherPlayerAmount, playerRandom)
-    num_players = len(players)
-    deck, discard_pile, current_color = uno.initialize_deck_and_discard_pile(cardNumMax, initialCard, players)
-    
-    current_player_index = 0
-    direction = 1
-    game_over = False
-
-    while not game_over:
-        player = players[current_player_index]
-        
-        # Handle the current player's turn
-        current_color, direction, skip_flag, game_over = uno.handle_player_turn(
-            player, players, deck, discard_pile, current_color, 
-            current_player_index, direction, cheat
-        )
-        
-        if not game_over:
-            # Move to next player
-            if not skip_flag:
-                current_player_index = (current_player_index + direction) % num_players
-            else: #already indexed with skip cards
-                current_player_index = (current_player_index + direction*2) % num_players
-                
-            # Animation pause between turns
-            for _ in range(3):
-                time.sleep(0.5)
-                print("  @   ", end="")
-                time.sleep(0.5)
-            print("\n")
-
-if __name__ == "__main__":
-    playerRandom = input("Randomize player position? (y/n): ")
-    cheat = input("Cheat? (y/n): ")
-    otherPlayerAmount = int(input("(Press Enter for default 3 AI player)Number of AI players: ") or 3)
-    cardNumMax = int(input("(Press Enter for default 9)Max number for the digit on cards: ") or 9)
+def main():
+    print("---------------------------------------------------------------------------------------")
+    print("Welcome to Terminal Uno! (*≧ω≦)")
+    time.sleep(1)
+    print("Please enter the following information to initialize the game ㄟ(￣▽￣ㄟ)")
+    time.sleep(1)
+    print("Press Enter ↵ to use default values: randomize player position,\nno cheat,3 AI players, max number for the digit on cards is 9,\nand 7 initial cards in hand.")
+    time.sleep(1)
+    print("---------------------------------------------------------------------------------------")
+    playerRandom = input("(Default y) Randomize player position? (y/n): ")
+    cheat = input("(Default n) Cheat? (y/n): ")
+    otherPlayerAmount = int(input("(Default 3 AI player) Number of AI players: ") or 3)
+    cardNumMax = int(input("(Default 9) Max number for the digit on cards: ") or 9)
     cardNumMax += 1
-    initialCard = int(input("(Press Enter for default 7)Number of initial card in hand: ") or 7)
+    initialCard = int(input("(Default 7)Number of initial card in hand: ") or 7)
 
     if playerRandom == "n" or playerRandom == "N":
         playerRandom = False
@@ -66,7 +41,10 @@ if __name__ == "__main__":
     print ("Player Random: ", playerRandom, end = " ")
     print (", Cheat: ", cheat, end = " ")
     print (", Number of AI players: ", otherPlayerAmount)
-    print ("Max number for the digit on cards: ", cardNumMax, end = " ")
+    print ("Max number for the digit on cards: ", cardNumMax - 1, end = " ")
     print (", Number of initial card in hand: ", initialCard, end = " ")
     print ("\n")
-    main(playerRandom, cheat, otherPlayerAmount, cardNumMax, initialCard)
+    uno.main_game(playerRandom, cheat, otherPlayerAmount, cardNumMax, initialCard)
+
+if __name__ == "__main__":
+    main()
