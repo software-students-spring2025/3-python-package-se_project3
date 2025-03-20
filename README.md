@@ -78,6 +78,8 @@ And you can implement the game with the following functions in your code.
  ```bash
  pipenv shell
  ```
+ - You may want to run tests before/after modifying (see below)
+
  - Exit the virtual environment
  ```bash
  exit
@@ -88,11 +90,7 @@ And you can implement the game with the following functions in your code.
  ```bash
  pipenv shell
  ```
- - Run the tests without success output
+ - Run the tests (with the successful output report of each case)
  ```bash
- pytest
- ```
- - Run the tests with success output
- ```bash
- pytest -s
+ pytest -vs
  ```
