@@ -6,7 +6,7 @@ An exercise to create a Python package, build it, test it, distribute it, and us
 
 ## Project Overview
 
- TerminalUno is a command-line implementation of the classic UNO card game, designed to be played against AI opponents. It provides an interactive, text-based experience, simulating the rules and mechanics of UNO, including draw cards (+2, +4), skips, reverses, wild cards, and stacking rules.
+ TerminalUno is a command-line implementation of the classic UNO card game, designed to be played against AI opponents. It provides an interactive, text-based experience, simulating the rules and mechanics of UNO, including draw cards (+2, +4), skips, reverses, wild cards, and stacking rules. Here are the [rules](https://docs.google.com/document/d/16gmQdQOZ-WtDtu28EEpIh5knLs8QQD4Fzrw5CXpT8_M/edit?usp=sharing) applied to this program that needs to be noticed.
 
  The game is developed in Python and runs entirely in the terminal, featuring turn-based gameplay, AI-controlled opponents, and special card effects.
 
@@ -28,7 +28,7 @@ An exercise to create a Python package, build it, test it, distribute it, and us
  ```
  - Usage
 
- Method 1(recommanded): Directly run the following command in the terminal to start the game.
+ Method 1(recommended): Directly run the following command in the terminal to start the game.
  ```bash
  terminalUno
  ```
