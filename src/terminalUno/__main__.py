@@ -42,7 +42,7 @@ def main(playerRandom, cheat, otherPlayerAmount, cardNumMax = 10, initialCard = 
 if __name__ == "__main__":
     playerRandom = True  # randomize position
     cheat = True  # can see AI card
-    otherPlayerAmount = 3  # number of AI
-    cardNumMax = 10  # number of card per color
+    otherPlayerAmount = 1  # number of AI
+    cardNumMax = 3  # number of card per color
     initialCard = 7  # number of initial card in hand
     main(playerRandom, cheat, otherPlayerAmount, cardNumMax, initialCard)

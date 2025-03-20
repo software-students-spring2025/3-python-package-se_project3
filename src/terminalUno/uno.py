@@ -222,7 +222,7 @@ def apply_card_effect(selected_card, player, players, current_player_index, dire
         # challenge wild4
         next_player = (current_player_index + direction) % num_players
         # For player
-        if not is_ai:
+        if not players[next_player].is_ai:
             challenge = input(f"{players[next_player].name}, do you want to challenge? (yes/no): ").strip().lower()
         else:
             print(f"{players[next_player].name}, do you want to challenge? (yes/no): ", end = "")
@@ -348,10 +348,19 @@ def handle_player_turn(player, players, deck, discard_pile, current_color, curre
                     print(f"{player.name} drew a card after reshuffling.")
                 else:
                     print("There's just no card left!")
+    # Check for Uno
+    if len(player.hand) == 1:
+        if player.is_ai:
+            print(f"{player.name} says 'Uno'!")
+        else:
+            print("You say 'Uno'!")
     
     # Check for winner
     if not player.hand:
-        print(f"{player.name} wins!")
+        if not player.is_ai:
+            print ("You win!")
+        else:
+            print(f"{player.name} wins!")
         game_over = True
     
     return current_color, direction, skip_flag, game_over
