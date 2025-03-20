@@ -140,17 +140,21 @@ def initialize_deck_and_discard_pile(cardNumMax, initialCard, players):
 
 
 def display_game_state(player, players, discard_pile, current_color, cheat):
-    print(f"\n*** {player.name}'s Turn ***")
+    if not player.is_ai:
+        print(f"\n*** Your Turn ***")
+    else:
+        print(f"\n*** {player.name}'s Turn ***")
     print(f"Current Card: {discard_pile[-1]}")
     if discard_pile[-1].type in [Type.WILD, Type.WILD4]:
         print(f"Current color: {current_color.value}")
-    print("Other Players' Hands:", end=" ")
+    print("Other Players' Hands:")
     for p in players:
         if p != player:
             if cheat and p.is_ai:
                 print(f"{p.name}: {p.hand}", end="  ")
             else:
                 print(f"{p.name}: {len(p.hand)} cards", end="  ")
+            print()
     print("\n")
 
 def display_player_hand(player):
@@ -191,7 +195,7 @@ def get_player_card_choice(player, deck, discard_pile, current_color):
         except ValueError:
             print("Invalid input. Please enter a number.")
 
-def apply_card_effect(selected_card, player, players, current_player_index, direction, current_color, deck, is_ai=False):
+def apply_card_effect(selected_card, player, players, current_player_index, direction, current_color, deck, discard_pile, is_ai=False):
     num_players = len(players)
     skip_flag= False
     
@@ -233,7 +237,7 @@ def apply_card_effect(selected_card, player, players, current_player_index, dire
         if challenge == "yes":
             # check if possible
             valid_play_exists = any(
-                is_valid_play(card, selected_card, current_color) and card.type != Type.WILD4
+                is_valid_play(card, discard_pile[-2], current_color) and card.type != Type.WILD4
                 for card in player.hand
             )
             if valid_play_exists:
@@ -275,7 +279,8 @@ def apply_card_effect(selected_card, player, players, current_player_index, dire
         skip_flag= True
     
     # Handle normal cards
-    else:
+    elif selected_card.type == Type.NUMBER:
+        # prevent printing wild 
         current_color = selected_card.color
         print(f"{player.name} played {selected_card}.")
     
@@ -309,11 +314,15 @@ def handle_player_turn(player, players, deck, discard_pile, current_color, curre
             discard_pile.append(selected_card)
             current_color, direction, skip_flag = apply_card_effect(
                 selected_card, player, players, 
-                current_player_index, direction, current_color, deck
+                current_player_index, direction, current_color, deck, discard_pile=discard_pile
             )
     
     # AI's turn
     else:
+        print(f"\n*** {player.name}'s Turn ***")
+        print(f"Current Card: {discard_pile[-1]}")
+        if discard_pile[-1].type in [Type.WILD, Type.WILD4]:
+            print(f"Current color: {current_color.value}")
         valid_card_found = False
         for i, card in enumerate(player.hand):
             if is_valid_play(card, discard_pile[-1], current_color):
@@ -321,7 +330,7 @@ def handle_player_turn(player, players, deck, discard_pile, current_color, curre
                 discard_pile.append(selected_card)
                 current_color, direction, skip_flag = apply_card_effect(
                     selected_card, player, players, 
-                    current_player_index, direction, current_color, deck, is_ai=True
+                    current_player_index, direction, current_color, deck, discard_pile, is_ai=True, 
                 )
                 valid_card_found = True
                 break
@@ -343,7 +352,7 @@ def handle_player_turn(player, players, deck, discard_pile, current_color, curre
     # Check for winner
     if not player.hand:
         print(f"{player.name} wins!")
-        game_over = True if not player.is_ai else False
+        game_over = True
     
     return current_color, direction, skip_flag, game_over
 
