@@ -237,7 +237,7 @@ def apply_card_effect(selected_card, player, players, current_player_index, dire
         if challenge == "yes":
             # check if possible
             valid_play_exists = any(
-                is_valid_play(card, discard_pile[-2], current_color) and card.type != Type.WILD4
+                is_valid_play(card, discard_pile[-2], discard_pile[-2].color) and card.type != Type.WILD4
                 for card in player.hand
             )
             if valid_play_exists:
