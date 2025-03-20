@@ -40,9 +40,33 @@ def main(playerRandom, cheat, otherPlayerAmount, cardNumMax = 10, initialCard = 
             print("\n")
 
 if __name__ == "__main__":
-    playerRandom = True  # randomize position
-    cheat = True  # can see AI card
-    otherPlayerAmount = 1  # number of AI
-    cardNumMax = 3  # number of card per color
-    initialCard = 7  # number of initial card in hand
+    playerRandom = input("Randomize player position? (y/n): ")
+    cheat = input("Cheat? (y/n): ")
+    otherPlayerAmount = int(input("(Press Enter for default 3 AI player)Number of AI players: ") or 3)
+    cardNumMax = int(input("(Press Enter for default 9)Max number for the digit on cards: ") or 9)
+    cardNumMax += 1
+    initialCard = int(input("(Press Enter for default 7)Number of initial card in hand: ") or 7)
+
+    if playerRandom == "n" or playerRandom == "N":
+        playerRandom = False
+    else:
+        playerRandom = True
+    if cheat == "y" or cheat == "Y":
+        cheat = True
+    else:
+        cheat = False
+    if (otherPlayerAmount == 0):
+        otherPlayerAmount = 3
+    if (cardNumMax == 1):
+        cardNumMax = 10
+    if (initialCard == 0):
+        initialCard = 7
+
+    print ("\n")
+    print ("Player Random: ", playerRandom, end = " ")
+    print (", Cheat: ", cheat, end = " ")
+    print (", Number of AI players: ", otherPlayerAmount)
+    print ("Max number for the digit on cards: ", cardNumMax, end = " ")
+    print (", Number of initial card in hand: ", initialCard, end = " ")
+    print ("\n")
     main(playerRandom, cheat, otherPlayerAmount, cardNumMax, initialCard)
