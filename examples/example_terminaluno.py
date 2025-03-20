@@ -25,9 +25,10 @@ def main():
     # Main uno game
     while not game_over:
         player = players[current_player_index]
-
-        print(f"\nIt's {player.name}'s turn.")
-        uno.display_game_state(player, players, discard_pile, current_color, cheat)
+        
+        # no need to display display_game_state
+        # because it is implemented in the handle_player_turn function
+        # uno.display_game_state(player, players, discard_pile, current_color, cheat)
 
         # Handle player's turn
         current_color, direction, skip_flag, game_over = uno.handle_player_turn(
@@ -40,7 +41,11 @@ def main():
 
         # Skip a player
         if skip_flag:
-            print(f"{players[current_player_index].name} is skipped.")
+            skipped = (current_player_index + direction) % num_players
+            if players[skipped].is_ai:
+                print(f"{players[skipped].name} is skipped.")
+            else:
+                print(f"You are skipped.")
             current_player_index = (current_player_index + direction * 2) % num_players
         else:
             current_player_index = (current_player_index + direction) % num_players
@@ -53,6 +58,8 @@ def main():
 
         # Reshuffled the deck
         reshuffled = uno.check_and_refresh_deck(deck, discard_pile)
+        # If you don't want to reshuffle the deck every round, comment out the line above
+        # because it is also implemented in the handle_player_turn function (only when the deck is empty)
 
     print("\nGame Over!")
 

@@ -1,8 +1,14 @@
 ![Python build & test](https://github.com/software-students-spring2025/3-python-package-se_project3/actions/workflows/build.yaml/badge.svg)
-# Python Package Exercise
+<!-- # Python Package Exercise
 
-An exercise to create a Python package, build it, test it, distribute it, and use it. See [instructions](./instructions.md) for details.
+An exercise to create a Python package, build it, test it, distribute it, and use it. See [instructions](./instructions.md) for details. -->
 
+
+## Project Overview
+
+ TerminalUno is a command-line implementation of the classic UNO card game, designed to be played against AI opponents. It provides an interactive, text-based experience, simulating the rules and mechanics of UNO, including draw cards (+2, +4), skips, reverses, wild cards, and stacking rules.
+
+ The game is developed in Python and runs entirely in the terminal, featuring turn-based gameplay, AI-controlled opponents, and special card effects.
 
 ## Team Members
 - **Haoxuan Lin(Steve)**: [Echoudexigaigu](https://github.com/Echoudexigaigu)
@@ -10,28 +16,27 @@ An exercise to create a Python package, build it, test it, distribute it, and us
 - **Zhiheng Pan**: [pzhiheng](https://github.com/pzhiheng)
 - **Henry Yu**: [ky2389](https://github.com/ky2389)
 
- 
- ## Project Overview
+ <!-- ## Pypl Project Link
 
- TerminalUNO is a command-line implementation of the classic UNO card game, designed to be played against AI opponents. It provides an interactive, text-based experience, simulating the rules and mechanics of UNO, including draw cards (+2, +4), skips, reverses, wild cards, and stacking rules.
-
- The game is developed in Python and runs entirely in the terminal, featuring turn-based gameplay, AI-controlled opponents, and special card effects.
- 
- ## Pypl Project Link
-
- [terminalUno 0.0.0](https://test.pypi.org/project/terminalUno/0.0.0/)
+ [terminalUno 0.0.0](https://test.pypi.org/project/terminalUno/0.0.0/) -->
  <!-- Renew after published -->
 
  ## Installation & Usage
  - Installation
  ```bash
- pip install -i https://test.pypi.org/simple/ terminalUno==0.0.4
+ pip install terminalUno
  ```
  - Usage
+
+ Method 1(recommanded): Directly run the following command in the terminal to start the game.
  ```bash
  terminalUno
  ```
- 
+<br>Method 2: Import the package
+```python
+import terminalUno as uno
+```
+And you can implement the game with the following functions in your code.
 
  ## Code examples
 
@@ -45,7 +50,7 @@ An exercise to create a Python package, build it, test it, distribute it, and us
  | `apply_card_effect(...)` | Applies special card effects (Skip, Reverse, Draw2, Wild). | `current_color, direction, skip_flag = uno.apply_card_effect(...)` |
  | `check_and_refresh_deck(deck, discard_pile)` | Reshuffles discard pile. | `reshuffled = uno.check_and_refresh_deck(deck, discard_pile)` |
 
- Fully working example:[example_terminaluno.py](examples/example_terminaluno.py) 
+ Some functions above are already implemented in other functions and may not be directly called. Therefore, we highly recommend taking a look at the example program to understand how to use the package: [example_terminaluno.py](examples/example_terminaluno.py) 
 
 
  
