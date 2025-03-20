@@ -8,7 +8,7 @@ license-files = []
 [project]
 name = "terminalUno"
 description = "A python package"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
   { name="Jiaxi Zhang", email="jz5751@nyu.edu" },
 ]
