@@ -34,7 +34,7 @@ An exercise to create a Python package, build it, test it, distribute it, and us
  ```
 <br>Method 2: Import the package
 ```python
-import terminalUno as uno
+import terminalUno.uno as uno
 ```
 And you can implement the game with the following functions in your code.
 
