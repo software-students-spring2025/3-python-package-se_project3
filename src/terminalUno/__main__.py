@@ -7,7 +7,7 @@ import terminalUno.uno as uno
 import time
 
 
-def main(playerRandom, cheat, otherPlayerAmount, cardNumMax = 10, initialCard = 7):
+def main(playerRandom = True, cheat = False, otherPlayerAmount = 3, cardNumMax = 10, initialCard = 7):
     players = uno.initialize_players(otherPlayerAmount, playerRandom)
     num_players = len(players)
     deck, discard_pile, current_color = uno.initialize_deck_and_discard_pile(cardNumMax, initialCard, players)
