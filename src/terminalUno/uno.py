@@ -366,4 +366,35 @@ def handle_player_turn(player, players, deck, discard_pile, current_color, curre
     return current_color, direction, skip_flag, game_over
 
 
+def main_game(playerRandom = True, cheat = False, otherPlayerAmount = 3, cardNumMax = 10, initialCard = 7):
+    players = initialize_players(otherPlayerAmount, playerRandom)
+    num_players = len(players)
+    deck, discard_pile, current_color = initialize_deck_and_discard_pile(cardNumMax, initialCard, players)
+    
+    current_player_index = 0
+    direction = 1
+    game_over = False
+
+    while not game_over:
+        player = players[current_player_index]
+        
+        # Handle the current player's turn
+        current_color, direction, skip_flag, game_over = handle_player_turn(
+            player, players, deck, discard_pile, current_color, 
+            current_player_index, direction, cheat
+        )
+        
+        if not game_over:
+            # Move to next player
+            if not skip_flag:
+                current_player_index = (current_player_index + direction) % num_players
+            else: #already indexed with skip cards
+                current_player_index = (current_player_index + direction*2) % num_players
+                
+            # Animation pause between turns
+            for _ in range(3):
+                time.sleep(0.5)
+                print("  @   ", end="")
+                time.sleep(0.5)
+            print("\n")
 
