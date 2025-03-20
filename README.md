@@ -18,7 +18,7 @@ An exercise to create a Python package, build it, test it, distribute it, and us
 
  ## Pypl Project Link
 
- [terminalUno](https://pypi.org/project/terminalUno/1.0.0/)
+ [terminalUno](https://pypi.org/project/terminalUno/1.0.1/)
  <!-- Renew after published -->
 
  ## Installation & Usage
