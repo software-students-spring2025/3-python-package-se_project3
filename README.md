@@ -45,7 +45,7 @@ An exercise to create a Python package, build it, test it, distribute it, and us
  | `apply_card_effect(...)` | Applies special card effects (Skip, Reverse, Draw2, Wild). | `current_color, direction, skip_flag = uno.apply_card_effect(...)` |
  | `check_and_refresh_deck(deck, discard_pile)` | Reshuffles discard pile. | `reshuffled = uno.check_and_refresh_deck(deck, discard_pile)` |
 
- Fully working example:[example_terminaluno.py](examples/example_terminaluno.py) 
+ Fully working example:[example_terminaluno.py](examples /example_terminaluno.py) 
 
 
  
